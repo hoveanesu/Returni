@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { MerchantNav } from "@/components/MerchantNav";
+import { StoreProvider } from "@/components/StoreProvider";
 import { MOCK_MERCHANT } from "@/lib/mock";
 
 export default function MerchantLayout({
@@ -28,9 +29,9 @@ export default function MerchantLayout({
       <main className="min-w-0 flex-1 px-4 py-5 md:px-8 md:py-8">
         <div className="mx-auto max-w-5xl">
           <p className="mb-4 inline-block rounded-full bg-surface-alt px-3 py-1 text-xs font-medium text-brand-blue">
-            Demo data: nothing here is saved yet
+            Demo data: saved in this browser only
           </p>
-          {children}
+          <StoreProvider>{children}</StoreProvider>
         </div>
       </main>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { useStore } from "@/components/StoreProvider";
 import { Modal } from "@/components/Modal";
 import { Receipt } from "@/components/Receipt";
 import { RedeemModal } from "@/components/RedeemModal";
@@ -11,25 +12,18 @@ import { lineTotal, newKey, receiptFromTx } from "@/lib/sale";
 import {
   completeSale,
   computeSale,
-  createStore,
   findCustomer,
   nextReceiptNo,
   normalizePhone,
   redeemOffer,
   validateSale,
-  type Store,
 } from "@/lib/engine";
 import { btnGhost, btnPrimary, cardCls, inputCls } from "@/lib/ui";
 import type { ReceiptData, RedeemResult, SaleItem } from "@/lib/types";
 
-export default function RecordSalePage() {
-  // The "database" for this demo. Replaced by a real backend later.
-  const [store, setStore] = useState<Store>(createStore);
-  const storeRef = useRef(store);
-  const commit = (next: Store) => {
-    storeRef.current = next;
-    setStore(next);
-  };
+function RecordSaleInner() {
+  // Shared demo store (also read by Analytics and Gold Drop)
+  const { store, storeRef, commit } = useStore();
 
   // Sale form
   const [phone, setPhone] = useState("");
@@ -622,4 +616,18 @@ export default function RecordSalePage() {
       )}
     </div>
   );
+}
+
+export default function RecordSalePage() {
+  const { loaded } = useStore();
+
+  if (!loaded) {
+    return (
+      <div>
+        <h1 className="text-2xl font-bold">Record Sale</h1>
+        <p className="mt-2 text-sm text-muted">Loading…</p>
+      </div>
+    );
+  }
+  return <RecordSaleInner />;
 }

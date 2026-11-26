@@ -6,12 +6,12 @@ import { usePathname } from "next/navigation";
 const items = [
   { href: "/merchant", label: "Record Sale", ready: true },
   { href: "/merchant/overview", label: "Analytics", ready: true },
-  { href: "", label: "Settings", ready: false },
-  { href: "/merchant/settings", label: "BackPay", ready: true },
-  { href: "", label: "Customers", ready: false },
-  { href: "", label: "RETURNi Prices", ready: false },
-  { href: "", label: "Gold Drop", ready: false },
-  { href: "", label: "Promotions", ready: false },
+  { href: "/merchant/settings", label: "Settings", ready: true },
+  { href: "/merchant/backpay", label: "BackPay", ready: true },
+{ href: "/merchant/customers", label: "Customers", ready: true },
+ { href: "/merchant/prices", label: "RETURNi Prices", ready: true },
+  { href: "/merchant/golddrop", label: "Gold Drop", ready: true },
+  { href: "/merchant/promotions", label: "Promotions", ready: true },
 ];
 
 export function MerchantNav() {
