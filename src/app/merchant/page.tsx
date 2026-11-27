@@ -6,6 +6,8 @@ import { Modal } from "@/components/Modal";
 import { Receipt } from "@/components/Receipt";
 import { RedeemModal } from "@/components/RedeemModal";
 import { RecentTransactions } from "@/components/RecentTransactions";
+import { ReceiptMessageStatus } from "@/components/ReceiptMessageStatus";
+import { queueReceipt, type QueueResult } from "@/lib/messaging/client";
 import { fmtDateTime, usd } from "@/lib/format";
 import { BACKPAY_RULES, CATALOG, MOCK_MERCHANT, PAYMENT_METHODS } from "@/lib/mock";
 import { lineTotal, newKey, receiptFromTx } from "@/lib/sale";
@@ -48,6 +50,7 @@ function RecordSaleInner() {
   const [showRedeem, setShowRedeem] = useState(false);
   const [preview, setPreview] = useState<ReceiptData | null>(null);
   const [done, setDone] = useState<ReceiptData | null>(null);
+  const [msg, setMsg] = useState<QueueResult | null>(null);
 
   const normPhone = normalizePhone(phone);
   const customer = normPhone ? findCustomer(store, normPhone) : null;
@@ -222,6 +225,10 @@ function RecordSaleInner() {
     commit(next);
     setPreview(null);
     setDone(receiptFromTx(result.tx));
+    // Queue the WhatsApp receipt. The sale is already saved, so a messaging
+    // problem never undoes it.
+    setMsg(null);
+    void queueReceipt(result.tx, consent).then(setMsg);
     // Reset the form for the next sale
     setPhone("");
     setName("");
@@ -604,10 +611,7 @@ function RecordSaleInner() {
 
       {done && (
         <Modal title="Sale completed" onClose={() => setDone(null)}>
-          <p className="mb-3 rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">
-            Sale saved. WhatsApp receipt queued (development simulation: nothing is
-            actually sent yet).
-          </p>
+                    <ReceiptMessageStatus result={msg} />
           <Receipt data={done} />
           <button className={`${btnPrimary} mt-4 w-full`} onClick={() => setDone(null)}>
             Record another sale

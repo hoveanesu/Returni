@@ -3,6 +3,10 @@ import { Logo } from "@/components/Logo";
 import { MerchantNav } from "@/components/MerchantNav";
 import { StoreProvider } from "@/components/StoreProvider";
 import { MOCK_MERCHANT } from "@/lib/mock";
+export const metadata = {
+  title: "Merchant portal",
+  robots: { index: false, follow: false },
+};
 
 export default function MerchantLayout({
   children,

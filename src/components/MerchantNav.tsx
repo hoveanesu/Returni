@@ -11,7 +11,7 @@ const items = [
 { href: "/merchant/customers", label: "Customers", ready: true },
  { href: "/merchant/prices", label: "RETURNi Prices", ready: true },
   { href: "/merchant/golddrop", label: "Gold Drop", ready: true },
-  { href: "/merchant/promotions", label: "Promotions", ready: true },
+  { href: "/merchant/messages", label: "Messages" },
 ];
 
 export function MerchantNav() {
