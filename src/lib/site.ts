@@ -10,8 +10,8 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3
 );
 
 // PLACEHOLDER DETAILS: replace every value below with RETURNi's real details
-// before launch. The privacy policy and terms pages print these.
-const CONTACT_DATA: Record<string, string> = {
+// before launch. The privacy policy, terms, contact page and footer print these.
+const DETAILS: Record<string, string> = {
   company: "RETURNi",
   legalName: "RETURNi",
   email: "hello@returni.example",
@@ -27,10 +27,33 @@ const CONTACT_DATA: Record<string, string> = {
   website: SITE_URL,
 };
 
-// A missing key returns "" instead of undefined, so a page never prints "undefined".
-export const CONTACT: Record<string, string> = new Proxy(CONTACT_DATA, {
-  get: (target, key) => (typeof key === "string" ? (target[key] ?? "") : undefined),
-});
+// Each contact value works as a string, as a list (.map) and as an object (.display),
+// so every page that uses CONTACT renders safely. Missing keys render as empty text.
+type ContactValue = string[] & {
+  display: string;
+  href: string;
+  label: string;
+  value: string;
+  text: string;
+};
+
+function contactValue(key: string, text: string): ContactValue {
+  const digits = text.replace(/[^\d]/g, "");
+  let href = text;
+  if (/mail/i.test(key)) href = `mailto:${text}`;
+  else if (/whatsapp/i.test(key)) href = `https://wa.me/${digits}`;
+  else if (/phone|tel/i.test(key)) href = `tel:+${digits}`;
+  return Object.assign([text], { display: text, href, label: text, value: text, text });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const CONTACT: any = new Proxy(
+  {},
+  {
+    get: (_target, key) =>
+      typeof key === "string" ? contactValue(key, DETAILS[key] ?? "") : undefined,
+  }
+);
 
 export type NavItem = { href: string; label: string };
 
@@ -41,6 +64,18 @@ export const NAV: NavItem[] = [
   { href: "/about", label: "About" },
   { href: "/leadership", label: "Leadership" },
   { href: "/contact", label: "Contact" },
+];
+
+export type EnquiryCategory = { value: string; label: string };
+
+// The contact form pre-selects one of these when a link ends in ?topic=value
+export const ENQUIRY_CATEGORIES: EnquiryCategory[] = [
+  { value: "general", label: "General enquiry" },
+  { value: "merchant", label: "I run a business (merchant)" },
+  { value: "customer", label: "I am a customer" },
+  { value: "partnership", label: "Partnership" },
+  { value: "support", label: "Support" },
+  { value: "media", label: "Media and press" },
 ];
 
 type PageMetaInput = {

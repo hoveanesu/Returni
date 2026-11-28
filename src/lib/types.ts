@@ -15,6 +15,7 @@ export type Product = {
   };
   
   export type Customer = {
+  firstSeenAt?: string;
     phone: string;
     name: string;
     registered: boolean;
@@ -59,6 +60,7 @@ export type Product = {
   export type GoldDropStatus = "active" | "pending" | "none";
   
   export type Transaction = {
+  repeatCustomer?: boolean;
     key: string; // idempotency key for the sale
     receiptNo: string;
     ref: string;
