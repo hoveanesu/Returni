@@ -57,7 +57,7 @@ export function loadService():
 
 // Stopgap until staff sign-in exists: when REAL sending is on, only accept
 // requests that come from this computer.
-function guardSending(req: Request): Response | null {
+export function guardSending(req: Request): Response | null {
   if (process.env.WHATSAPP_PROVIDER !== "cloud") return null;
   const host = (req.headers.get("host") ?? "").split(":")[0];
   const local = host === "localhost" || host === "127.0.0.1";
